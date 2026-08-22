@@ -9,22 +9,20 @@ GsCore 插件：从第三方反代（danmakus.com / aicu.cc）查询 B 站用户
 - `bc弹幕<uid>` / `bc视频弹幕<uid>` — 查视频弹幕
 - `bc直播<uid>` / `bc直播弹幕<uid>` — 查直播弹幕
 
-## 目录结构（gscore 嵌套标准，两层）
+## 目录结构（单层入口）
 
 ```
 BiliHistoryUID/
-├── __init__.py / __nest__.py  仓库级标记（嵌套插件）
-├── BiliHistoryUID/             插件包（注册名 = 文件夹名）
-│   ├── __init__.py             命令入口
-│   ├── api/                   数据源聚合
-│   │   ├── service.py         聚合调度
-│   │   ├── aicu/              aicu.cc 抓取器
-│   │   └── danmakus/          danmakus 抓取器
-│   ├── config/                插件配置
-│   └── utils/draw.py          Pillow 绘图
+├── __init__.py             命令入口（插件包）
+├── api/                    数据源聚合
+│   ├── service.py          聚合调度
+│   ├── aicu/               aicu.cc 抓取器
+│   └── danmakus/           danmakus 抓取器
+├── config/                 插件配置
+├── utils/draw.py           Pillow 绘图
 ├── pyproject.toml
 ├── README.md
-└── ...
+└── LICENSE
 ```
 
 ## 配置说明
