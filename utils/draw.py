@@ -24,16 +24,27 @@ CARD = "#FFFFFF"
 TEXT_MAIN = "#333333"
 TEXT_SUB = "#888888"
 
+# 候选字体路径：插件资源 → Linux 常用 CJK 字体 → Windows 字体，逐个尝试加载
+_FONT_PATHS = [
+    str(get_res_path("font") / "simhei.ttf"),
+    "msyh.ttc",
+    "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+    "/usr/share/fonts/opentype/noto/NotoSansCJKsc-Regular.otf",
+    "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc",
+    "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc",
+    "/usr/share/fonts/truetype/droid/DroidSansFallbackFull.ttf",
+    "/usr/share/fonts/adobe-sourcehansans/SourceHanSansSC-Regular.otf",
+    "/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc",
+    "/usr/share/fonts/noto/NotoSansCJK-Regular.ttc",
+    "/usr/local/share/fonts/NotoSansCJK-Regular.ttc",
+    "C:/Windows/Fonts/msyh.ttc",
+    "C:/Windows/Fonts/simhei.ttf",
+    "C:/Windows/Fonts/msyhbd.ttc",
+]
+
 
 def _font(size: int) -> ImageFont.FreeTypeFont:
-    candidates = [
-        str(get_res_path("font") / "simhei.ttf"),
-        "msyh.ttc",
-        "C:/Windows/Fonts/msyh.ttc",
-        "C:/Windows/Fonts/simhei.ttf",
-        "C:/Windows/Fonts/msyhbd.ttc",
-    ]
-    for p in candidates:
+    for p in _FONT_PATHS:
         try:
             return ImageFont.truetype(p, size)
         except Exception:
