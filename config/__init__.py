@@ -6,7 +6,7 @@
 
 from __future__ import annotations
 
-from gsuid_core.data_store import PLUGINS_CONFIGS_PATH
+from gsuid_core.data_store import get_res_path
 from gsuid_core.utils.plugins_config.gs_config import StringConfig
 from gsuid_core.utils.plugins_config.models import (
     GsBoolConfig,
@@ -14,7 +14,7 @@ from gsuid_core.utils.plugins_config.models import (
     GsStrConfig,
 )
 
-CONF_PATH = PLUGINS_CONFIGS_PATH / "BiliHistoryUID.json"
+CONF_PATH = get_res_path("BiliHistoryUID") / "config.json"
 
 CONFIG_DEFAULT = {
     "enable_ai_summary": GsBoolConfig(
@@ -30,7 +30,7 @@ CONFIG_DEFAULT = {
     "history_page_size": GsIntConfig(
         title="danmakus 每页条数",
         desc="历史接口 pageSize，一次命令抓取的弹幕量上限。",
-        data=10,
+        data=5,
     ),
     "aicu_cookie": GsStrConfig(
         title="AICU Cookie",

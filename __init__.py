@@ -11,7 +11,7 @@
 
 import time
 
-from gsuid_core.sv import SV, Plugins
+from gsuid_core.sv import SL, SV, Plugins
 from gsuid_core.bot import Bot
 from gsuid_core.models import Event
 from gsuid_core.logger import logger
@@ -20,10 +20,11 @@ from .config import get_config
 from .api.service import build_card
 from .utils.draw import draw_card
 
-Plugins(
-    name="BiliHistoryUID",
-    allow_empty_prefix=True,
-)
+if "BiliHistoryUID" not in SL.plugins:
+    Plugins(
+        name="BiliHistoryUID",
+        allow_empty_prefix=True,
+    )
 
 sv_query = SV("B站历史查询")
 
@@ -58,10 +59,10 @@ def _make(mode: str):
         if not model.get("items"):
             return await bot.send(f"该板块未获取到用户 {uid} 的数据。")
         try:
-            img = draw_card(model)
+            img = await draw_card(model)
         except Exception as e:
             logger.exception(e)
-            return await bot.send("画像绘制失败，请查看后台日志。")
+            return await bot.send(f"画像绘制失败，请查看后台日志：{e}")
         await bot.send(img)
         logger.info(f"[BiliHistoryUID] 板块={mode} 查询 {uid} 耗时 {time.time() - start:.1f}s")
     return handler

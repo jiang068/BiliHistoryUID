@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Bilibili 用户画像分析卡片</title>
+    <style>
+        :root {
+            --primary-color: #00A1D6;
+            --pink-color: #FF6699;
+            --green-color: #36B37E;
+            --yellow-color: #FAAD14;
+            --purple-color: #722ED1;
+            --bg-color: #F4F6F9;
+            --card-bg: #FFFFFF;
+            --border-color: #E6EBF0;
+            --text-main: #18191C;
+            --text-sub: #61666D;
+            --text-muted: #9499A0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'JetBrainsMono', 'H7GBKHeavy', 'NotoSansJP', 'NotoEmoji', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            width: 1380px;
+            padding: 20px;
+        }
+
+        .header-banner {
+            background: linear-gradient(135deg, #00A1D6 0%, #0077A3 100%);
+            border-radius: 16px;
+            padding: 18px 24px;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 4px 15px rgba(0, 161, 214, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .avatar-wrap {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            border: 3px solid #FFFFFF;
+            background-color: #E6F4FF;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .header-info {
+            flex: 1;
+        }
+
+        .header-top-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 6px;
+        }
+
+        .header-name {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .level-tag {
+            font-size: 11px;
+            color: #FFFFFF;
+            font-style: italic;
+            padding: 1px 6px;
+            border-radius: 3px;
+            background: #FF6699;
+            font-weight: bold;
+        }
+
+        .vip-tag {
+            background-color: #FB7299;
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .official-tag {
+            background: rgba(255, 255, 255, 0.2);
+            color: #FFFFFF;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .header-sub {
+            font-size: 13px;
+            opacity: 0.92;
+            line-height: 1.5;
+        }
+
+        .columns-wrap {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .column {
+            width: 660px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 16px 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-sub);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 1. 风格研判 */
+        .style-tag {
+            color: #FFFFFF;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 3px 12px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-left: 8px;
+        }
+
+        .style-desc {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .style-reason {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* 2. AI 深度分析 */
+        .ai-card {
+            background: #F0F5FF;
+            border: 1px solid #ADC6FF;
+        }
+
+        .ai-badge {
+            background: var(--purple-color);
+            color: white;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .ai-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-main);
+            margin-top: 10px;
+        }
+
+        /* 3. 认证归属 */
+        .cert-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            padding: 6px 0;
+            border-bottom: 1px dashed #F0F0F0;
+        }
+
+        .cert-row:last-child {
+            border-bottom: none;
+        }
+
+        .cert-tag {
+            background: #EEF5FF;
+            color: #2B6CB0;
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .cert-src {
+            color: var(--text-muted);
+            font-size: 11px;
+            margin-left: 6px;
+        }
+
+        /* 4. 直播动向 */
+        .live-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .friendly-badge {
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        /* 5. 圈子与态度 */
+        .pills-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .pill-item {
+            background: #EEF5FF;
+            color: #2B6CB0;
+            font-size: 12px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .attitude-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .att-tag {
+            color: white;
+            font-size: 12px;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        /* 6. 对线词汇 */
+        .kw-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .kw-tag {
+            background: #FFF0F3;
+            color: #C0392B;
+            font-size: 12px;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        /* 7. 成分分布 (饼图 + 色块) */
+        .pie-container {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin-top: 8px;
+        }
+
+        .pie-chart {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .pie-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 14px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+        }
+
+        .legend-color {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+        }
+
+        /* 小号进度条 */
+        .bar-wrap {
+            height: 8px;
+            border-radius: 4px;
+            background: #F1F2F3;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+
+        .bar-inner {
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        /* 右栏：证据卡片 */
+        .ev-item {
+            background: #FAFAFC;
+            border-left: 3px solid #DDE3EA;
+            border-radius: 4px;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+        }
+
+        .ev-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            margin-bottom: 4px;
+        }
+
+        .ev-src { color: var(--primary-color); font-weight: bold; }
+        .ev-time { color: var(--text-muted); }
+        .ev-text { font-size: 13px; line-height: 1.5; color: var(--text-main); word-break: break-all; }
+
+        .footer-note {
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-top: 10px;
+        }
+
+        .alert-box {
+            background: #FFF3E0;
+            color: #E8850C;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin: 8px 0;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .alert-danger {
+            background: #FDEAEA;
+            color: #8E1B1B;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部 Banner (真实官方 B 站用户信息) -->
+    <div class="header-banner">
+        <div class="avatar-wrap">
+            <img src="{{ analysis.card.face }}" class="avatar-img" onerror="this.src='https://i0.hdslb.com/bfs/face/member/noface.jpg'">
+        </div>
+        <div class="header-info">
+            <div class="header-top-row">
+                <span class="header-name">{{ analysis.card.name }}</span>
+                <span class="level-tag">Lv{{ analysis.card.level }}</span>
+                {% if analysis.card.vip %}
+                <span class="vip-tag">{{ analysis.card.vip }}</span>
+                {% endif %}
+                {% if analysis.card.official %}
+                <span class="official-tag">✔ {{ analysis.card.official }}</span>
+                {% endif %}
+                <span style="font-size:13px; opacity:0.85; margin-left:auto;">UID: {{ uid }}</span>
+            </div>
+            <div class="header-sub">
+                粉丝: {{ analysis.card.fans }} &nbsp;|&nbsp; 关注: {{ analysis.card.following }} &nbsp;|&nbsp; 投稿: {{ analysis.card.archiveCount }} &nbsp;|&nbsp; 获赞: {{ analysis.card.likeNum }}
+                <br>
+                签名: {{ analysis.card.sign or '（未填写签名）' }}
+            </div>
+        </div>
+    </div>
+
+    <!-- 主体双栏 -->
+    <div class="columns-wrap">
+
+        <!-- 左栏 -->
+        <div class="column">
+
+            <!-- 1. 风格研判 -->
+            <div class="card">
+                <div class="card-title">
+                    风格研判 <span class="style-tag" style="background: {{ analysis.style_color }};">{{ analysis.style_tag }}</span>
+                </div>
+                <div class="style-desc">{{ analysis.style_desc }}</div>
+                <div class="style-reason">依据: {{ analysis.style_reason }}</div>
+            </div>
+
+            <!-- 2. AI 深度分析 (仅在 enable_ai_summary=True 且有总结内容时渲染) -->
+            {% if summary %}
+            <div class="card ai-card">
+                <div class="card-title">
+                    🤖 AI 深度分析 <span class="ai-badge">LLM 智能画像</span>
+                </div>
+                <div class="ai-text">{{ summary }}</div>
+            </div>
+            {% endif %}
+
+            <!-- 3. 认证归属 -->
+            <div class="card">
+                <div class="card-title">✅ 认证归属（高信心：关注官方/粉丝牌/官方抽奖）</div>
+                {% if analysis.certs %}
+                    {% for cert in analysis.certs %}
+                    <div class="cert-row">
+                        <div>
+                            <span class="cert-tag">认证 {{ cert.camp }}{% if cert.names %}（{{ cert.names | join('/') }}）{% endif %}</span>
+                            <span class="cert-src">{{ cert.signals | join('・') }}</span>
+                        </div>
+                        <span style="color: {{ cert.color }}; font-weight: bold;">{{ cert.match }}</span>
+                    </div>
+                    {% endfor %}
+                    {% if analysis.suspect_warn and analysis.suspect_warn.level == 'high' %}
+                    <div class="alert-box alert-danger">
+                        🚨 <b>疑似反串</b>：此账号认证支持 {{ analysis.suspect_warn.camps | join('、') }}，但发言充满攻击性，身份与言行矛盾！
+                    </div>
+                    {% endif %}
+                {% else %}
+                    <div style="color:var(--text-muted); font-size:12px;">未侦测到明确认证讯号（未关注已知官方号/无相关粉丝牌）。</div>
+                {% endif %}
+            </div>
+
+            <!-- 4. 直播动向 -->
+            <div class="card">
+                <div class="card-title">🎯 直播动向（资料较新，较能反映当前立场）</div>
+                {% if analysis.live_dynamics %}
+                    <div style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">
+                        总直播弹幕 {{ analysis.total_live }} 条 · 最新约 <b>{{ analysis.freshness }}</b>
+                    </div>
+                    {% for ld in analysis.live_dynamics %}
+                    <div class="live-row">
+                        <span>
+                            <b>{{ ld.upname }}</b>
+                            {% if ld.camp %}<span class="cert-tag" style="margin-left:4px;">{{ ld.camp }}</span>{% endif %}
+                            <span style="color:var(--text-muted); font-size:12px; margin-left:4px;">{{ ld.count }}条</span>
+                        </span>
+                        {% if ld.hostileRatio >= 40 %}
+                        <span class="friendly-badge" style="background:#FDEAEA; color:#8E1B1B;">敌对 {{ ld.hostileRatio }}%</span>
+                        {% elif ld.hostileRatio >= 18 %}
+                        <span class="friendly-badge" style="background:#FFF7E6; color:#B7791F;">偏对线 {{ ld.hostileRatio }}%</span>
+                        {% else %}
+                        <span class="friendly-badge" style="background:#E6F7EE; color:#1A7F4B;">友善 {{ ld.friendly }}</span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    <div style="font-size:11px; color:var(--text-muted); margin-top:6px;">
+                        ↑ 常驻某主播直播间 = 较可靠的当前立场；态度同样看语境。
+                    </div>
+                {% else %}
+                    <div style="color:var(--text-muted); font-size:12px;">无直播弹幕记录（可能不常看直播或不发弹幕）。</div>
+                {% endif %}
+            </div>
+
+            <!-- 5. 活跃圈子与态度 -->
+            <div class="card">
+                <div class="card-title">🎯 活跃圈子与态度（留言/视频，资料较旧）</div>
+                {% if analysis.top_entities %}
+                    <div class="pills-group">
+                        {% for e in analysis.top_entities %}
+                        <div class="pill-item">{{ e.name }} <b>{{ e.count }}</b></div>
+                        {% endfor %}
+                    </div>
+                    {% for ci in analysis.camp_info %}
+                    <div class="attitude-row">
+                        <span><b>{{ ci.camp }}</b> <span style="color:var(--text-muted); font-size:12px;">关注度 {{ ci.share }}%</span></span>
+                        {% if ci.attitude.hostile %}
+                        <span class="att-tag" style="background:#C0392B;">敌对/对线 {{ ci.attitude.ratio }}% → 疑似反方</span>
+                        {% elif ci.attitude.label == '大致友善/中性' %}
+                        <span class="att-tag" style="background:#36B37E;">友善/中性 → 疑似支持者</span>
+                        {% elif ci.attitude.mixed %}
+                        <span class="att-tag" style="background:#F0B429;">偶有对线 {{ ci.attitude.ratio }}%</span>
+                        {% else %}
+                        <span class="att-tag" style="background:#8993A4;">样本少</span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    <div class="alert-box alert-danger" style="margin-top:8px;">
+                        ⚠️ 「关注度」只代表他常出现在这些圈子，<b>不等于他站这一边</b>——在该圈发言若多为敌对，较可能是<b>反方/黑或乐子人</b>。
+                    </div>
+                {% else %}
+                    <div style="color:var(--text-muted); font-size:12px;">未侦测到明确的圈子关键词。</div>
+                {% endif %}
+            </div>
+
+            <!-- 6. 侦测到的对线/饭圈用语 -->
+            <div class="card">
+                <div class="card-title">🗣️ 侦测到的对线 / 饭圈用语</div>
+                {% if analysis.top_memes %}
+                <div class="kw-group" style="margin-bottom:10px;">
+                    {% for kw, cnt in analysis.top_memes %}
+                    <div class="kw-tag">{{ kw }} {{ cnt }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <div style="font-size:12px; color:var(--text-sub); line-height:1.5;">
+                    评论区引战比例约 <b>{{ analysis.toxic_ratio }}%</b>（辱骂 {{ analysis.hard_count }}・硬对线 {{ analysis.meme_count }}・轻嘲讽 {{ analysis.light_count }} 条）
+                    {% if analysis.live_toxic_ratio %}；直播弹幕引战比例 {{ analysis.live_toxic_ratio }}%{% endif %}。
+                </div>
+            </div>
+
+            <!-- 7. 成分分布 (包含小饼图) -->
+            <div class="card">
+                <div class="card-title">🎨 成分分布（按具体圈子拆分）</div>
+                <div class="pie-container">
+                    <div class="pie-chart" style="background: conic-gradient({{ analysis.conic_gradient_css }});"></div>
+                    <div class="pie-legend">
+                        {% for cname, pct, col in analysis.pie_data %}
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: {{ col }};"></div>
+                            <span>{{ cname }} {{ pct }}%</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:10px;">
+                    依活动视频拆到具体「游戏/主播」；对比视频会平分给两边。
+                </div>
+            </div>
+
+            <!-- 8. 活动轨迹与小号预测 -->
+            <div class="card">
+                <div class="card-title">📊 活动轨迹</div>
+                <div style="font-size:13px; margin-bottom:8px;">
+                    总留言 <b>{{ analysis.total_comments }}</b> &nbsp;|&nbsp; 总弹幕 <b>{{ analysis.total_danmaku }}</b> &nbsp;|&nbsp; 取样 <b>{{ analysis.sampled_count }}</b> 条跨 <b>{{ analysis.time_span_hours }}</b> 小时
+                </div>
+                <div style="font-size:13px; font-weight:bold; color: {% if analysis.alt_account_prob >= 60 %}#E8850C{% elif analysis.alt_account_prob >= 30 %}#F0B429{% else %}#36B37E{% endif %};">
+                    🕵️ 疑似小号可能性 {{ analysis.alt_account_prob }}%（{{ analysis.alt_band }}）
+                </div>
+                <div class="bar-wrap">
+                    <div class="bar-inner" style="width: {{ analysis.alt_account_prob }}%; background: {% if analysis.alt_account_prob >= 60 %}#E8850C{% elif analysis.alt_account_prob >= 30 %}#F0B429{% else %}#36B37E{% endif %};"></div>
+                </div>
+                {% if analysis.burst %}
+                <div class="alert-box alert-danger">
+                    ⚠️ 近期发言高度集中（单小时内 ≥10 条），符合灌水/协同发言特征。
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <!-- 右栏 -->
+        <div class="column">
+
+            <!-- 原始发言 (证据列) -->
+            <div class="card">
+                <div class="card-title">📜 触发判断的原始发言（证据）</div>
+                <div style="font-size:11px; color:var(--text-muted); margin-bottom:10px;">
+                    ↑ 请自行核对语境，关键词可能误判（如引用、反串）。
+                </div>
+
+                {% for item in analysis.evidence_items %}
+                <div class="ev-item">
+                    <div class="ev-meta">
+                        <span class="ev-src">[{{ item.source_head or '发言' }}]</span>
+                        <span class="ev-time">{{ item.readable_time }}</span>
+                    </div>
+                    <div class="ev-text">{{ item.text or item.content }}</div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- 关注列表 privacy 提示 (共同关注已剔除) -->
+            <div class="card" style="background:#FFFBE6; border-color:#FFE58F;">
+                <div class="card-title" style="color:var(--yellow-color);">👥 关注列表</div>
+                <div style="font-size:13px; color:var(--yellow-color);">
+                    🔒 该账号已将关注列表设为隐私，无法取得。
+                </div>
+            </div>
+
+            <!-- 底部免责声明 -->
+            <div class="footer-note">
+                以上为公开资讯聚合与关键词规则推测，是辅助辨识的参考讯号，不是定论。立场/风格判断可能因反串、引用、语境而误判，请对照上方原始发言自行判断，切勿据此对他人骚扰或人肉。留言/弹幕来自第三方 aicu.cc / danmakus.com，可能不完整。
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
