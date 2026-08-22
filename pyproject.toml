@@ -1,0 +1,25 @@
+[project]
+name = "BiliHistoryUID"
+version = "0.1.0"
+description = "从第三方反代抓取 B 站用户评论/弹幕历史并绘制画像卡片"
+authors = [
+  { name = "bili-checker" },
+]
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.9, <4.0"
+dependencies = [
+    "httpx",
+    "Pillow",
+    "curl_cffi",
+]
+
+[project.urls]
+Issues = "https://example.com/repo/issues"
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm]
+distribution = false
